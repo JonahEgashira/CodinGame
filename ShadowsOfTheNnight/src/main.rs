@@ -24,22 +24,33 @@ fn main() {
     let y0 = parse_input!(inputs[1], i32);
 
     let (mut current_x, mut current_y) = (x0, y0);
-    let (mut xl, mut xr) = (0, w);
-    let (mut yl, mut yr) = (0, h);
+    let (mut x_min, mut x_max) = (-1, w);
+    let (mut y_min, mut y_max) = (-1, h);
     loop {
         let mut input_line = String::new();
         io::stdin().read_line(&mut input_line).unwrap();
         let bomb_dir = input_line.trim().to_string(); // the direction of the bombs from batman's current location (U, UR, R, DR, D, DL, L or UL)
-        let first_char = bomb_dir.chars().next().unwrap();
 
-        let middle_x = (xl + xr) / 2;
-        let middle_y = (yl + yr) / 2;
-        match first_char {
-            'U' => yr = middle_y,
-            'D' => yl = middle_y,
-            'R' => xl = middle_x,
-            'L' => xr = middle_x,
-            _ => panic!(),
-        };
+        if bomb_dir.contains('U') {
+            y_max = current_y;
+            let middle_y = (y_min + y_max) / 2;
+            current_y = middle_y;
+        }
+        if bomb_dir.contains('D') {
+            y_min = current_y;
+            let middle_y = (y_min + y_max) / 2;
+            current_y = middle_y;
+        }
+        if bomb_dir.contains('L') {
+            x_max = current_x;
+            let middle_x = (x_min + x_max) / 2;
+            current_x = middle_x;
+        }
+        if bomb_dir.contains('R') {
+            x_min = current_x;
+            let middle_x = (x_min + x_max) / 2;
+            current_x = middle_x;
+        }
+        println!("{} {}", current_x, current_y);
     }
 }
